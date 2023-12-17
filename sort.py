@@ -276,19 +276,29 @@ def sorter_of_files(path:str):
     folder_creator_for_all_file_tipes(path)
     # Сортує всі файли які були за заданою адресою папки та записує їх в форматі словників 
     result_list_of_sorting = function_of_sorting(file_list,path)
-    # Цикл що буде проходитися по файлах в папці архів 
-    for file in result_list_of_sorting[8]:
-        #  Розпаковує архіви в папки з такоюж назвою як файли(без формату) та записує шлях до цих папок
-        adres_of_unpacking_files = unpacking_archive(path,file)
-        for item in adres_of_unpacking_files:
-            # Рекурсивно запускає програму для сортування файлів в розпакованих папках
-            sorter_of_files(item)
     # Створює текстовий файл за записом статистики по виконанню програми 
     creator_for_txt_file_with_result(path,result_list_of_sorting)
     # Видаляє пусті папки 
     delete_empty_folder(path)
+    # Цикл що буде проходитися по файлах в папці архів якщо вони є
+    if len(result_list_of_sorting[8][0]) > 0:
+        for file in result_list_of_sorting[8]:
+            #  Розпаковує архіви в папки з такоюж назвою як файли(без формату) та записує шлях до цих папок
+            adres_of_unpacking_files = unpacking_archive(path,file)
+            # Запитуємо у користувача чи посортувати файл в розархівованих папках
+            sorting_archives_q = input(f'Do you want to sorting unpacking files in {path}\\archive y/n: ') 
+            if sorting_archives_q == 'y':
+                for item in adres_of_unpacking_files:
+                    # Рекурсивно запускає програму для сортування файлів в розпакованих папках
+                    sorter_of_files(item)
 
 
-# Передача шляху та запуск програми
-sorter_of_files(sys.argv[1])
+# Обробляємо помилку якщо було передано неправильні значення для запуску програми
+# Та запускаємо саму програму
+try:
+    path_to_sorting = sys.argv
+    if len(path_to_sorting) == 2:
+        sorter_of_files(path_to_sorting[1])
+except IndexError:
+    print('After name of file sort.py must be path to folder what you want sorting')
 
