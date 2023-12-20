@@ -1,11 +1,12 @@
 from setuptools import setup
 
-setup(name='sorter_of_file_by_krom4rd',
-      version='0.2',
+setup(name='clean_folder',
+      version='0.2.1',
       description='https://github.com/Krom4rd/Krom4rd',
       author='Oleh Novosad',
       author_email='krom4rd@gmail.com',
       license='MIT',
-      packages=['sorter_of_file_by_krom4rd'],
-      install_requires=['markdown',],
-      zip_safe=False)
+      packages=['clean_folder'],
+      entry_points={'console_scripts': ['clean-folder = clean_folder.sort:terminal_starter']})
+
+

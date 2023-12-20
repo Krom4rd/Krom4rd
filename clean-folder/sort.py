@@ -297,12 +297,14 @@ def sorter_of_files(path:str):
     delete_empty_folder(path)
 
 
-# Обробляємо помилку якщо було передано неправильні значення для запуску програми
-# Та запускаємо саму програму
-try:
-    path_to_sorting = sys.argv
-    if len(path_to_sorting) == 2:
-        sorter_of_files(path_to_sorting[1])
-except IndexError:
-    print('After name of file sort.py must be path to folder what you want sorting')
+
+def terminal_starter():
+    # Обробляємо помилку якщо було передано неправильні значення для запуску програми
+    # Та запускаємо саму програму з терміналу
+    try:
+        path_to_sorting = sys.argv
+        if len(path_to_sorting) == 2:
+            sorter_of_files(path_to_sorting[1])
+    except IndexError:
+        print('After name of file sort.py must be path to folder what you want sorting')
 
