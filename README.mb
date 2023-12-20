@@ -1,4 +1,8 @@
-Get your folder adres 
+Use in terminal: clean-folder path
+Use in .py file: Import clean-folder
+                 clean_folder.sorter_of_files(path)
+
+
 1.Sorted files 
 2.Unpacking archives
 3.Create txt file with result 
