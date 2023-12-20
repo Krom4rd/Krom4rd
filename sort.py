@@ -124,18 +124,15 @@ def rename_file_if_already_exists(path_to_removed:str,format:str,name_of_file:st
     while True:
         # функція приймає два аргументи шлях до папки в яку потрібно помістити файл та повний адрес файлу
         # Цикл завершиться якщо файла з переданим імям немає в папці в яку потрібно помістити файл
-        # В даному випадку ми передбачаємо що файлів з таким самим імям буде не більше 1000
+        # В даному випадку ми передбачаємо що файлів з таким самим імям буде не більше 1000000
         if os.path.isfile(f'{path_to_removed}\\{format}\\{new_name}') == False:
             return new_name
-        if os.path.isfile(f'{path_to_removed}\\{format}\\{new_name}') and index > 100:
-           new_name = str(new_name.split('.')[0])[:-3] + f'{index}.' + new_name.split('.')[-1]
-        elif os.path.isfile(f'{path_to_removed}\\{format}\\{new_name}') and index > 10:
-           new_name = str(new_name.split('.')[0])[:-2] + f'{index}.' + new_name.split('.')[-1]
-        elif os.path.isfile(f'{path_to_removed}\\{format}\\{new_name}') and index > 1:
-            new_name = str(new_name.split('.')[0])[:-1] + f'{index}.' + new_name.split('.')[-1]
+        if os.path.isfile(f'{path_to_removed}\\{format}\\{new_name}') and index > 1:
+           new_name = str(new_name.split('.')[0])[:-6] + '{:0>6}'.format(str(index)) + '.' + new_name.split('.')[-1]
         elif os.path.isfile(f'{path_to_removed}\\{format}\\{new_name}') and name_of_file.find('__reename__') == -1:
-            new_name = new_name.split('.')[0] + f'__rename__{index}.' + new_name.split('.')[-1]
+            new_name = new_name.split('.')[0] + f'__rename__{"{:0>6}".format(str(index))}.' + new_name.split('.')[-1]
         index +=1
+        
             
 
 def function_of_sorting(file_list:list,path_to_removed:str):
@@ -185,7 +182,7 @@ def function_of_sorting(file_list:list,path_to_removed:str):
                 name_of_file = rename_file_if_already_exists(path_to_removed,'other',name_of_file)
                 dict_for_files_with_unknown_format[name_of_file] = item
                 os.rename(str(item),f'{path_to_removed}\\other\\{name_of_file}')
-            # Може виникнути помилка якщо файлів з подібним імям надто багато ми їх залишимо на своєму місці це понад 1000 файлів з однаковим імям
+            # Може виникнути помилка якщо файлів з подібним імям надто багато ми їх залишимо на своєму місці це понад 1000000 файлів з однаковим імям
         except FileNotFoundError:
             continue    
     return [dict_for_files_images_format],[len(dict_for_files_images_format)],[dict_for_files_video_format],[len(dict_for_files_video_format)],[dict_for_files_textdoc_format],[len(dict_for_files_textdoc_format)],\
@@ -206,7 +203,11 @@ def unpacking_archive(path:str,archive_name_list:str):
         # Відділяє формат файлу від загальної назви щоб в подпльшому назвати папку такою ж назвою як файл але без формату у кінці назви
         format_of_file = file.split(".")[-1]
         # Розпаковує архів у папці archives створивши для розпакованих файлів папку з ідентичною назвою до файлу 
-        shutil.unpack_archive(f'{path}\\archives\\{file}', f'{path}\\archives\\{file[:file.find(format_of_file)]}')
+        try:
+            shutil.unpack_archive(f'{path}\\archives\\{file}', f'{path}\\archives\\{file[:file.find(format_of_file)]}')
+        #Якщо винекне проблема що на архівному файлі було встановнено пароль файл буде пропущено
+        except RuntimeError:
+            continue
         # Записує шлях до папки з розпакованим архівом в список
         list_name_of_folders_with_unpaking_files.append(f'{path}\\archives\\{file[:file.find(file.split(".")[-1])-1]}')
     return list_name_of_folders_with_unpaking_files
@@ -261,12 +262,15 @@ def delete_empty_folder(path:str):
 
 
 def sorter_of_files(path:str):
-    '''!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    Функція яка буде запускає правильний поряд виконання функці щоб даний код працюва в правильному порядку
+    '''Please write adres of folder
+    Use "r'string'" or write adres with duble backslash "\\"
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     Даний код зроблений для сортування файлів за їхнім розширенням
-    Якщо файлів з однаковим імя буде понад 1000 всі наступні файли залишаться за старою адресою
+    Якщо файлів з однаковим імя буде понад 1000000 всі наступні файли залишаться за старою адресою
     Якщо недостатньо дозволів для переміщення або переіменування файлу він також залишеться за старою фдресою
-    Всі архіви буде розпаковано в папку та названо відповідно до назви файлу, в цих папках також відбудеться сортування
+    Всі архіви буде розпаковано в папку та названо відповідно до назви файлу,
+    Є можливість одразу посортувати файли в розархівованих папках вписавши "y" в командну строку після запитання 
+    "Do you want to sorting unpacking files"
     Буде створено звіт про переміщені файли в текстовому файлі
     'result_of_sorting.txt' який буде записаний в папку за фдресою переданою для сортування 
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'''
@@ -278,8 +282,6 @@ def sorter_of_files(path:str):
     result_list_of_sorting = function_of_sorting(file_list,path)
     # Створює текстовий файл за записом статистики по виконанню програми 
     creator_for_txt_file_with_result(path,result_list_of_sorting)
-    # Видаляє пусті папки 
-    delete_empty_folder(path)
     # Цикл що буде проходитися по файлах в папці архів якщо вони є
     if len(result_list_of_sorting[8][0]) > 0:
         for file in result_list_of_sorting[8]:
@@ -291,6 +293,8 @@ def sorter_of_files(path:str):
                 for item in adres_of_unpacking_files:
                     # Рекурсивно запускає програму для сортування файлів в розпакованих папках
                     sorter_of_files(item)
+     # Видаляє пусті папки 
+    delete_empty_folder(path)
 
 
 # Обробляємо помилку якщо було передано неправильні значення для запуску програми
