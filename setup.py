@@ -8,7 +8,6 @@ setup(name='clean_folder',
       license='MIT',
       packages=['clean_folder'],
       entry_points={'console_scripts': ['clean-folder = clean_folder.sort:terminal_starter']},
-      packages=['usefull'],
       install_requires=[
           'markdown',
       ],
