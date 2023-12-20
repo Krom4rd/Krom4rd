@@ -7,11 +7,6 @@ setup(name='clean_folder',
       author_email='krom4rd@gmail.com',
       license='MIT',
       packages=['clean_folder'],
-      entry_points={'console_scripts': ['clean-folder = clean_folder.sort:terminal_starter']},
-      packages=['clean_folder'],
-      install_requires=[
-          'markdown',
-      ],
-      zip_safe=False)
+      entry_points={'console_scripts': ['clean-folder = clean_folder.sort:terminal_starter']})
 
 
