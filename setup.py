@@ -6,6 +6,6 @@ setup(name='sorter_of_file_by_krom4rd',
       author='Oleh Novosad',
       author_email='krom4rd@gmail.com',
       license='MIT',
-      packages=['sort'],
+      packages=['sorter_of_file_by_krom4rd'],
       install_requires=['markdown',],
       zip_safe=False)
